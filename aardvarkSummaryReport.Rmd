@@ -1,0 +1,39 @@
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=6, fig.path='figures/',
+                      echo=FALSE, warning=FALSE, message=FALSE, include=FALSE)
+```
+
+```{r, code=readLines("percTestCalculations.R")}
+```
+
+---
+title: 'Aarvark Percolation Tests'
+author: "Jan Knappe"
+date: "2 June 2017"
+output: html_document
+---
+
+## Aardvark Permeameter
+
+The Aardvark permeameter (Soilmoisture Equipment Corp., USA) is a constant-head permeameter to measure the soil saturated hydraulic conductivity K<sub>sat</sub>. A test hole is drilled with a 10 cm diameter hand auger to the desired depth and percolation rates are measured through oberserving the volume of supplied water infiltrating into the bottom and side walls of the test hole over time by means of a permeameter module ensuring a constant water level in the test hole. After a steady infiltration rate is reached, the resulting K<sub>sat</sub> can be determined.
+
+### Aardvark Tests
+
+A total of `r nrow(percMeta)` permeameter test were conducted on `r nrow(siteMeta)` unique sites in `r n_distinct(siteMeta$countyName)` Irish counties (`r sort(as.vector(unique(siteMeta$countyName)))`).
+
+```{r plot, include = TRUE}
+
+ggplot(percMeta, aes((holeDepth_cm+tableHeight_cm)/100, percFactor*10)) + 
+  geom_point(aes(size=holeDia_cm)) +
+  theme_gray() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(lineheight=.8, face="bold")) +
+  ggtitle("Dependency of normalized percolation factor on trial geometry") +
+  xlab("distance from water reservoir to bottom of trial hole [m]") +
+  ylab("normalized percolation factor [m/l]") +
+  scale_size_continuous(name = "Test hole Diameter:", 
+                  labels = c("10.0 cm", "10.5 cm", "11.0 cm", "11.5 cm", "12.0 cm"))
+
+```
+
+

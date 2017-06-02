@@ -26,10 +26,10 @@ calculatePercFactor = function(holeDia, holeDepth, tableHeight, gwDepth) {
                NA)))
   return(percFactor)
 }
- j
+
+
 ### DATA IMPORT AND MUNGING ###
 # --------------------------- #
-
 
 # read site metadata
 siteMeta =
@@ -37,7 +37,7 @@ siteMeta =
     "data/metadata-sites.xlsx",
     col_names = TRUE,
     na = "NA",
-    col_types = c("text", "text", "numeric")
+    col_types = c("text", "text", "text", "numeric")
   ) %>%
   mutate(siteNameLower = tolower(siteName))
 
@@ -97,6 +97,24 @@ percTidy = percFiles %>%
   left_join(siteMeta, by = "siteNameLower") %>%
   # then create human readable unique percTestID
   mutate(percTestID = paste(siteID, siteCounter, sep = "-"))
+
+
+
+
+### PLOTS ###
+# --------- #
+
+# influence of geometry on percFactor
+ggplot(percMeta, aes((holeDepth_cm+tableHeight_cm)/100, percFactor*10)) + 
+  geom_point(aes(size=holeDia_cm)) +
+  theme_gray() +
+  theme(legend.position = "bottom",
+        plot.title = element_text(lineheight=.8, face="bold")) +
+  ggtitle("Dependency of normalized percolation factor on trial geometry") +
+  xlab("distance from water reservoir to bottom of trial hole [m]") +
+  ylab("normalized percolation factor [m/l]") +
+  scale_size_continuous(name = "Test hole Diameter:", 
+                  labels = c("10.0 cm", "10.5 cm", "11.0 cm", "11.5 cm", "12.0 cm"))
 
 
 
